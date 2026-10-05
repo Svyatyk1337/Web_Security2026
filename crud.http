@@ -63,6 +63,5 @@ Accept: application/json
 DELETE {{baseUrl}}/api/v1/transfers/{{secondTransferId}}
 Authorization: Basic {{username}} {{password}}
 
-### 10. Delete the first transfer
 DELETE {{baseUrl}}/api/v1/transfers/{{firstTransferId}}
 Authorization: Basic {{username}} {{password}}
