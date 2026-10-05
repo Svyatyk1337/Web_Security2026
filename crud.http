@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:8080
+@username = admin
+@password = admin
+@firstTransferId = 4
+@secondTransferId = 5
+
+GET {{baseUrl}}/api/v1/transfers
+Authorization: Basic {{username}} {{password}}
+Accept: application/json
+
+GET {{baseUrl}}/api/v1/transfers/1
+Authorization: Basic {{username}} {{password}}
+Accept: application/json
+
+POST {{baseUrl}}/api/v1/transfers
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+
+{
+  "id": "{{firstTransferId}}",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Galatasaray",
+  "transferFee": 75000000
+}
+
+GET {{baseUrl}}/api/v1/transfers/{{firstTransferId}}
+Authorization: Basic {{username}} {{password}}
+Accept: application/json
+
+PUT {{baseUrl}}/api/v1/transfers
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+
+{
+  "id": "{{firstTransferId}}",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Chelsea",
+  "transferFee": 80000000
+}
+
+GET {{baseUrl}}/api/v1/transfers/{{firstTransferId}}
+Authorization: Basic {{username}} {{password}}
+Accept: application/json
+
+POST {{baseUrl}}/api/v1/transfers
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+
+{
+  "id": "{{secondTransferId}}",
+  "playerName": "Rafael Leao",
+  "fromClub": "AC Milan",
+  "toClub": "Barcelona",
+  "transferFee": 90000000
+}
+
+GET {{baseUrl}}/api/v1/transfers/{{secondTransferId}}
+Authorization: Basic {{username}} {{password}}
+Accept: application/json
+
+DELETE {{baseUrl}}/api/v1/transfers/{{secondTransferId}}
+Authorization: Basic {{username}} {{password}}
+
+### 10. Delete the first transfer
+DELETE {{baseUrl}}/api/v1/transfers/{{firstTransferId}}
+Authorization: Basic {{username}} {{password}}

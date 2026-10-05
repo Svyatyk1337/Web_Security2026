@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід</title>
+    <style>
+        body {
+            align-items: center;
+            background: #f3f4f6;
+            display: flex;
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            width: min(100% - 48px, 360px);
+        }
+
+        h1 {
+            color: #111827;
+            font-size: 24px;
+            margin: 0 0 24px;
+        }
+
+        label {
+            color: #374151;
+            display: block;
+            font-size: 14px;
+            margin: 16px 0 6px;
+        }
+
+        input {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        button {
+            background: #2563eb;
+            border: 0;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 24px;
+            padding: 11px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .message {
+            color: #b91c1c;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<main class="login-card">
+    <h1>Вхід до системи</h1>
+    <form method="post" action="/login">
+        <label for="username">Ім'я користувача</label>
+        <input id="username" name="username" type="text" autocomplete="username" required>
+
+        <label for="password">Пароль</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+        <button type="submit">Увійти</button>
+    </form>
+    <p class="message" id="message" hidden></p>
+</main>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const message = document.getElementById('message');
+
+    if (params.has('error')) {
+        message.textContent = 'Неправильне ім\'я користувача або пароль.';
+        message.hidden = false;
+    } else if (params.has('logout')) {
+        message.textContent = 'Ви вийшли із системи.';
+        message.hidden = false;
+    }
+</script>
+</body>
+</html>
