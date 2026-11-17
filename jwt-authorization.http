@@ -1,0 +1,125 @@
+### Step 1: send the 3 token requests first (user, manager, admin). Step 2: send requests 1-10.
+
+# @name login_user
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "user"
+}
+
+###
+
+# @name login_manager
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "manager",
+  "password": "manager"
+}
+
+###
+
+# @name login_admin
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+###1. USER JWT: GET all -> 200
+GET http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{login_user.response.body.access_token}}
+Accept: application/json
+
+###
+
+###2. USER JWT: GET one -> 200
+GET http://localhost:8080/api/v1/transfers/1
+Authorization: Bearer {{login_user.response.body.access_token}}
+Accept: application/json
+
+###
+
+###3. USER JWT: CREATE -> 403 Forbidden
+POST http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{login_user.response.body.access_token}}
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Galatasaray",
+  "transferFee": 75000000
+}
+
+###
+
+###4. USER JWT: DELETE -> 403 Forbidden
+DELETE http://localhost:8080/api/v1/transfers/1
+Authorization: Bearer {{login_user.response.body.access_token}}
+
+###
+
+###5. MANAGER JWT: CREATE -> 200
+POST http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{login_manager.response.body.access_token}}
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Galatasaray",
+  "transferFee": 75000000
+}
+
+###
+
+###6. MANAGER JWT: UPDATE -> 200
+PUT http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{login_manager.response.body.access_token}}
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Chelsea",
+  "transferFee": 80000000
+}
+
+###
+
+###7. MANAGER JWT: DELETE -> 403 Forbidden
+DELETE http://localhost:8080/api/v1/transfers/4
+Authorization: Bearer {{login_manager.response.body.access_token}}
+
+###
+
+###8. ADMIN JWT: DELETE -> 200
+DELETE http://localhost:8080/api/v1/transfers/4
+Authorization: Bearer {{login_admin.response.body.access_token}}
+
+###
+
+###9. ADMIN JWT: GET all -> 200
+GET http://localhost:8080/api/v1/transfers
+Authorization: Bearer {{login_admin.response.body.access_token}}
+Accept: application/json
+
+###
+
+###10. INVALID JWT: GET all -> 401 Unauthorized
+GET http://localhost:8080/api/v1/transfers
+Authorization: Bearer invalid.token.value
+Accept: application/json
+
+###
