@@ -1,0 +1,69 @@
+### Step 1: send the 3 token requests first. Step 2: send requests 1-5.
+
+# @name login_user
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "user"
+}
+
+###
+
+# @name login_manager
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "manager",
+  "password": "manager"
+}
+
+###
+
+# @name login_admin
+POST http://localhost:8080/api/v1/auth/token
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+###1. ADMIN JWT: GET all audit notes -> 200
+GET http://localhost:8080/api/v1/audit
+Authorization: Bearer {{login_admin.response.body.access_token}}
+Accept: application/json
+
+###
+
+###2. ADMIN JWT: GET one audit note -> 200
+GET http://localhost:8080/api/v1/audit/1
+Authorization: Bearer {{login_admin.response.body.access_token}}
+Accept: application/json
+
+###
+
+###3. ADMIN JWT: GET audit notes of user 'manager' -> 200
+GET http://localhost:8080/api/v1/audit?username=manager
+Authorization: Bearer {{login_admin.response.body.access_token}}
+Accept: application/json
+
+###
+
+###4. MANAGER JWT: GET own audit notes -> 200
+GET http://localhost:8080/api/v1/audit/me
+Authorization: Bearer {{login_manager.response.body.access_token}}
+Accept: application/json
+
+###
+
+###5. USER JWT: GET all audit notes -> 403 Forbidden
+GET http://localhost:8080/api/v1/audit
+Authorization: Bearer {{login_user.response.body.access_token}}
+Accept: application/json
+
+###

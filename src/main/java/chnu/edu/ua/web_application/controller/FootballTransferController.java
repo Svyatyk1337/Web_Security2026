@@ -1,5 +1,6 @@
 package chnu.edu.ua.web_application.controller;
 
+import chnu.edu.ua.web_application.audit.AuditService;
 import chnu.edu.ua.web_application.model.FootballTransfer;
 import chnu.edu.ua.web_application.service.FootballTransferService;
 import jakarta.annotation.security.RolesAllowed;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FootballTransferController {
     private final FootballTransferService footballTransferService;
+    private final AuditService auditService;
 
     @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @GetMapping
@@ -38,18 +40,21 @@ public class FootballTransferController {
     @RolesAllowed({"MANAGER", "ADMIN"})
     @PostMapping
     public FootballTransfer createTransfer(@RequestBody FootballTransfer transfer) {
+        auditService.record("CREATE_TRANSFER", "id=" + transfer.getId());
         return footballTransferService.createTransfer(transfer);
     }
 
     @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @PutMapping
     public FootballTransfer updateTransfer(@RequestBody FootballTransfer transfer) {
+        auditService.record("UPDATE_TRANSFER", "id=" + transfer.getId());
         return footballTransferService.updateTransfer(transfer);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteTransfer(@PathVariable String id) {
+        auditService.record("DELETE_TRANSFER", "id=" + id);
         footballTransferService.deleteTransfer(id);
     }
 }

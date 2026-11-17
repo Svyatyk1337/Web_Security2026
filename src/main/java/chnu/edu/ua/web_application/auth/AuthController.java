@@ -1,5 +1,6 @@
 package chnu.edu.ua.web_application.auth;
 
+import chnu.edu.ua.web_application.audit.AuditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtEncoder jwtEncoder;
+    private final AuditService auditService;
 
     @Value("${jwt.expiration-seconds}")
     private long expirationSeconds;
@@ -38,6 +40,7 @@ public class AuthController {
         Authentication auth = manager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
+        auditService.recordFor(auth.getName(), "LOGIN", "JWT issued");
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("web_security26")
