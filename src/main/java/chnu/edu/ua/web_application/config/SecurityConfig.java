@@ -1,9 +1,9 @@
 package chnu.edu.ua.web_application.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 	@Bean
 	UserDetailsService userDetailsService() {
@@ -36,10 +37,6 @@ public class SecurityConfig {
 		.csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/api/v1/transfers/**"))
 		.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/login.html", "/error").permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/v1/transfers/**").hasAnyRole("USER", "MANAGER", "ADMIN")
-				.requestMatchers(HttpMethod.POST, "/api/v1/transfers/**").hasAnyRole("MANAGER", "ADMIN")
-				.requestMatchers(HttpMethod.PUT, "/api/v1/transfers/**").hasAnyRole("MANAGER", "ADMIN")
-				.requestMatchers(HttpMethod.DELETE, "/api/v1/transfers/**").hasRole("ADMIN")
 			.anyRequest().authenticated())
 		.formLogin(form -> form
 				.loginPage("/login.html")

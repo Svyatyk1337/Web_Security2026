@@ -1,0 +1,101 @@
+### Method security: @PreAuthorize (GET, DELETE), @RolesAllowed (POST), @Secured (PUT)
+
+###1. USER: GET all (@PreAuthorize) -> 200
+GET http://localhost:8080/api/v1/transfers
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+###2. USER: GET one (@PreAuthorize) -> 200
+GET http://localhost:8080/api/v1/transfers/1
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+###3. USER: UPDATE (@Secured) -> 403 Forbidden
+PUT http://localhost:8080/api/v1/transfers
+Authorization: Basic user user
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Chelsea",
+  "transferFee": 80000000
+}
+
+###
+
+###4. USER: CREATE (@RolesAllowed) -> 403 Forbidden
+POST http://localhost:8080/api/v1/transfers
+Authorization: Basic user user
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Galatasaray",
+  "transferFee": 75000000
+}
+
+###
+
+###5. MANAGER: CREATE (@RolesAllowed) -> 200
+POST http://localhost:8080/api/v1/transfers
+Authorization: Basic manager manager
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Galatasaray",
+  "transferFee": 75000000
+}
+
+###
+
+###6. MANAGER: UPDATE (@Secured) -> 200
+PUT http://localhost:8080/api/v1/transfers
+Authorization: Basic manager manager
+Content-Type: application/json
+
+{
+  "id": "4",
+  "playerName": "Victor Osimhen",
+  "fromClub": "Napoli",
+  "toClub": "Chelsea",
+  "transferFee": 80000000
+}
+
+###
+
+###7. MANAGER: DELETE (@PreAuthorize ADMIN) -> 403 Forbidden
+DELETE http://localhost:8080/api/v1/transfers/4
+Authorization: Basic manager manager
+
+###
+
+###8. ADMIN: GET one (@PreAuthorize) -> 200
+GET http://localhost:8080/api/v1/transfers/4
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+###9. ADMIN: DELETE (@PreAuthorize ADMIN) -> 200
+DELETE http://localhost:8080/api/v1/transfers/4
+Authorization: Basic admin admin
+
+###
+
+###10. WRONG PASSWORD: GET all -> 401 Unauthorized
+GET http://localhost:8080/api/v1/transfers
+Authorization: Basic admin wrong
+Accept: application/json
+
+###

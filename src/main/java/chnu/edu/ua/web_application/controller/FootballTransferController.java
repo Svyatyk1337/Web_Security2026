@@ -2,7 +2,10 @@ package chnu.edu.ua.web_application.controller;
 
 import chnu.edu.ua.web_application.model.FootballTransfer;
 import chnu.edu.ua.web_application.service.FootballTransferService;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,26 +23,31 @@ import java.util.List;
 public class FootballTransferController {
     private final FootballTransferService footballTransferService;
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @GetMapping
     public List<FootballTransfer> getAllTransfers() {
         return footballTransferService.getAllTransfers();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @GetMapping("/{id}")
     public FootballTransfer getTransfer(@PathVariable String id) {
         return footballTransferService.getTransfer(id);
     }
 
+    @RolesAllowed({"MANAGER", "ADMIN"})
     @PostMapping
     public FootballTransfer createTransfer(@RequestBody FootballTransfer transfer) {
         return footballTransferService.createTransfer(transfer);
     }
 
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @PutMapping
     public FootballTransfer updateTransfer(@RequestBody FootballTransfer transfer) {
         return footballTransferService.updateTransfer(transfer);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteTransfer(@PathVariable String id) {
         footballTransferService.deleteTransfer(id);
